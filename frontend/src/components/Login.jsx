@@ -10,6 +10,7 @@ function Login() {
 	const [password, setPassword] = useState("");
 	const [loading, setLoading] = useState(false);
 	const [error, setError] = useState("");
+	const [role, setRole] = useState(""); // New state for role
 	const navigate = useNavigate();
 	const { isLoggedIn, login } = useAuth();
 
@@ -30,7 +31,13 @@ function Login() {
 			);
 			if (res.status === 200) {
 				login();
-				navigate("/profile");
+				if (role === "admin") {
+					navigate("/admin-dashboard");
+				} else if (role === "distributor") {
+					navigate("/distributor-dashboard");
+				} else {
+					navigate("/user-dashboard");
+				}
 			}
 		} catch (err) {
 			setError(err.response?.data?.message || "An error occurred");
@@ -39,7 +46,6 @@ function Login() {
 			setLoading(false);
 		}
 	};
-	
 
 	return (
 		<div
@@ -76,6 +82,44 @@ function Login() {
 							required
 						/>
 					</div>
+					<div className="mt-4 text-white flex justify-between items-center">
+					<div className="flex items-center">
+						<input
+							type="radio"
+							id="user"
+							name="role"
+							value="user"
+							checked={role === "user"}
+							onChange={(e) => setRole(e.target.value)}
+							className="mr-2"
+						/>
+						<label htmlFor="user">User</label>
+					</div>
+					<div className="flex items-center mt-2">
+						<input
+							type="radio"
+							id="admin"
+							name="role"
+							value="admin"
+							checked={role === "admin"}
+							onChange={(e) => setRole(e.target.value)}
+							className="mr-2"
+						/>
+						<label htmlFor="admin">Admin</label>
+					</div>
+					<div className="flex items-center mt-2">
+						<input
+							type="radio"
+							id="distributor"
+							name="role"
+							value="distributor"
+							checked={role === "distributor"}
+							onChange={(e) => setRole(e.target.value)}
+							className="mr-2"
+						/>
+						<label htmlFor="distributor">Distributor</label>
+					</div>
+				</div>
 					<div className="flex items-center justify-between mt-4">
 						<p className="text-white">
 							Don{"'"}t have an account?{" "}
@@ -99,6 +143,7 @@ function Login() {
 						</button>
 					</div>
 				</form>
+			
 				{error && (
 					<div className="mt-4 text-red-300 text-center">{error}</div>
 				)}
