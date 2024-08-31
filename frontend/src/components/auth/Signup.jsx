@@ -44,7 +44,7 @@ function Signup() {
 
 	return (
 		<div
-			className="flex items-center justify-center min-h-screen bg-gray-700 bg-cover bg-center"
+			className="flex items-center justify-center min-h-screen bg-gray-700 bg-cover bg-center w-full"
 			style={{
 				backgroundImage:
 					"url('https://source.unsplash.com/1600x900/?signup,technology')",
@@ -85,17 +85,6 @@ function Signup() {
 							placeholder="Password"
 							value={password}
 							onChange={(e) => setPassword(e.target.value)}
-							required
-						/>
-					</div>
-					<div className="flex items-center border rounded-md border-gray-600 bg-gray-700">
-						<FiLock className="w-6 h-6 text-gray-400 ml-3" />
-						<input
-							type="password"
-							className="w-full px-4 py-2 bg-gray-700 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-400"
-							placeholder="Confirm Password"
-							value={confirmPassword}
-							onChange={(e) => setConfirmPassword(e.target.value)}
 							required
 						/>
 					</div>

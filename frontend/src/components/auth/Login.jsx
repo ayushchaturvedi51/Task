@@ -1,15 +1,15 @@
 import { useState, useEffect } from "react";
-import axios from "axios";
 import { useNavigate, Link } from "react-router-dom";
-import { useAuth } from "../contexts/AuthContext";
 import { FiMail, FiLock } from "react-icons/fi";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
+import { useAuth } from "../../contexts";
 
 function Login() {
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
 	const [loading, setLoading] = useState(false);
 	const [error, setError] = useState("");
+	const [role, setRole] = useState(""); // New state for role
 	const navigate = useNavigate();
 	const { isLoggedIn, login } = useAuth();
 
@@ -18,35 +18,23 @@ function Login() {
 			navigate("/profile");
 		}
 	}, [isLoggedIn, navigate]);
+	
 
-	const handleLogin = async (e) => {
+	const handleLogin = (e) => {
 		e.preventDefault();
 		setLoading(true);
-		try {
-			const res = await axios.post(
-				"/api/users/login",
-				{ email, password },
-				{ withCredentials: true }
-			);
-			if (res.status === 200) {
-				const { role } = res.data;
-				login();
-
-				// Navigate based on the user's role
-				if (role === "admin") {
-					navigate("/admin-dashboard");
-				} else if (role === "distributor") {
-					navigate("/distributor-dashboard");
-				} else {
-					navigate("/user-dashboard");
-				}
+		// Simulate login process
+		setTimeout(() => {
+			login();
+			if (role === "admin") {
+				navigate("/dashboard/admin");
+			} else if (role === "distributor") {
+				navigate("/distributor-dashboard");
+			} else {
+				navigate("/user-dashboard");
 			}
-		} catch (err) {
-			setError(err.response?.data?.message || "An error occurred");
-			console.error(err);
-		} finally {
 			setLoading(false);
-		}
+		}, 1000); // Simulate a delay for the login process
 	};
 
 	return (
@@ -84,6 +72,44 @@ function Login() {
 							required
 						/>
 					</div>
+					<div className="mt-4 text-white flex justify-between items-center">
+						<div className="flex items-center">
+							<input
+								type="radio"
+								id="user"
+								name="role"
+								value="user"
+								checked={role === "user"}
+								onChange={(e) => setRole(e.target.value)}
+								className="mr-2"
+							/>
+							<label htmlFor="user">User</label>
+						</div>
+						<div className="flex items-center mt-2">
+							<input
+								type="radio"
+								id="admin"
+								name="role"
+								value="admin"
+								checked={role === "admin"}
+								onChange={(e) => setRole(e.target.value)}
+								className="mr-2"
+							/>
+							<label htmlFor="admin">Admin</label>
+						</div>
+						<div className="flex items-center mt-2">
+							<input
+								type="radio"
+								id="distributor"
+								name="role"
+								value="distributor"
+								checked={role === "distributor"}
+								onChange={(e) => setRole(e.target.value)}
+								className="mr-2"
+							/>
+							<label htmlFor="distributor">Distributor</label>
+						</div>
+					</div>
 					<div className="flex items-center justify-between mt-4">
 						<p className="text-white">
 							Don{"'"}t have an account?{" "}
@@ -107,6 +133,7 @@ function Login() {
 						</button>
 					</div>
 				</form>
+			
 				{error && (
 					<div className="mt-4 text-red-300 text-center">{error}</div>
 				)}

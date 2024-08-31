@@ -1,8 +1,6 @@
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import AuctionList from "./components/AuctionList";
 import AuctionItem from "./components/AuctionItem";
-import Signup from "./components/Signup";
-import Login from "./components/Login";
 import Profile from "./components/Profile";
 import BidForm from "./components/BidForm";
 import Logout from "./components/Logout";
@@ -14,8 +12,10 @@ import Home from "./components/Home";
 import CreateAuctionItem from "./components/CreateAuctionItem";
 import EditAuctionItem from "./components/EditAuctionItem";
 import UserDashboard from "./components/Dashboard/UserDashboard";
-import AdminDashboard from "./components/Dashboard/AminDashboard";
 import DistributorDashboard from "./components/Dashboard/DistributorDashboard";
+import Login from "./components/auth/Login";
+import Signup from "./components/auth/Signup";
+import AdminDashboard from './components/Dashboard/AminDashboard'
 
 function App() {
 	const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -84,8 +84,9 @@ function App() {
 						/>
 						<Route
 							path="/dashboard/admin"
-							element={<ProtectedRoute component={AdminDashboard} />}
+							element={<ProtectedRoute component={AdminDashboard}/>}
 						/>
+
 						<Route
 							path="/dashboard/distributor"
 							element={<ProtectedRoute component={DistributorDashboard} />}
