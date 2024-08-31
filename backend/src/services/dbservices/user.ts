@@ -168,9 +168,29 @@ export class User{
 
   static loginDistributor=async(data:any):Promise<any>=>{
     try {
-      await postgresdb.query.distributors.findFirst({
-        where:eq(distributors.phoneNumber,data.phoneNumber)
+      const checkDistributor=await postgresdb.query.distributors.findFirst({
+        where:eq(distributors.phoneNumber,data.phoneNumber),
+        columns:{
+          id:true
+        },
+        with:{
+          admins:{
+            columns:{
+              distributorLoginId:true,
+              distributorLoginPassword:true
+            }
+          }
+        }
       })
+      if(!checkDistributor){
+        throw new Error("Insert correct Credentials")
+      }
+      
+      if(checkDistributor.admins[0].distributorLoginId==data.loginId && checkDistributor.admins[0].distributorLoginPassword==data.password){
+        const token=setUser({distributorId:checkDistributor.id})
+        return token
+      }
+
       
     } catch (error) {
       throw new Error(error)

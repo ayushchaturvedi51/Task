@@ -73,6 +73,7 @@ export const distributors = pgTable('distributors', {
   organizationName: varchar('organization_name', { length: 100 }).notNull(),
   createdAt: timestamp('created_at').defaultNow(),
   updatedAt: timestamp('updated_at').defaultNow(),
+  xpBalance: integer('xp_balance').default(10000)
 });
 
 // Define relations
