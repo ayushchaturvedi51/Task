@@ -13,6 +13,9 @@ import NavBar from "./components/NavBar";
 import Home from "./components/Home";
 import CreateAuctionItem from "./components/CreateAuctionItem";
 import EditAuctionItem from "./components/EditAuctionItem";
+import UserDashboard from "./components/Dashboard/UserDashboard";
+import AdminDashboard from "./components/Dashboard/AminDashboard";
+import DistributorDashboard from "./components/Dashboard/DistributorDashboard";
 
 function App() {
 	const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -42,7 +45,7 @@ function App() {
 		<AuthProvider value={{ isLoggedIn, login, logout }}>
 			<Router>
 				<NavBar />
-				<div className="container bg-[#1b1b25] pt-16"> {/* Add padding-top */}
+				<div className="container bg-[#1b1b25] pt-16 w-full">
 					<Routes>
 						<Route path="/" element={<Home />} />
 						<Route path="/signup" element={<Signup />} />
@@ -72,6 +75,20 @@ function App() {
 						<Route
 							path="/auction/bid/:id"
 							element={<ProtectedRoute component={BidForm} />}
+						/>
+
+						{/* Dashboard Routes */}
+						<Route
+							path="/dashboard/user"
+							element={<ProtectedRoute component={UserDashboard} />}
+						/>
+						<Route
+							path="/dashboard/admin"
+							element={<ProtectedRoute component={AdminDashboard} />}
+						/>
+						<Route
+							path="/dashboard/distributor"
+							element={<ProtectedRoute component={DistributorDashboard} />}
 						/>
 					</Routes>
 				</div>
