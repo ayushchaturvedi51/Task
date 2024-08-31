@@ -29,7 +29,7 @@ const Home = () => {
 					fill="url(#gradient1)"
 				/>
 			</svg>
-			YOUR BID
+			CRIDA
 		</div>
 	);
 
@@ -39,7 +39,8 @@ const Home = () => {
 				<div className="flex flex-col items-center mb-8">
 					<Logo />
 					<h1 className="mt-4 text-4xl font-extrabold text-center text-transparent md:text-6xl bg-clip-text bg-gradient-to-r from-purple-400 to-pink-600">
-						Welcome to Our Online Bidding System
+					  CRIDA Gamification
+
 					</h1>
 				</div>
 				<p className="max-w-4xl mx-auto mb-12 text-lg text-center text-gray-300 md:text-xl">

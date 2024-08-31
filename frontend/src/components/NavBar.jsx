@@ -10,7 +10,8 @@ const NavBar = () => {
 		<nav className="bg-gray-900 bg-opacity-80 backdrop-blur-md p-4 shadow-lg fixed top-0 left-0 w-full z-50">
 			<div className="container mx-auto flex items-center justify-between">
 				<Link className="text-xl font-bold text-yellow-500" to="/">
-					YOUR BID
+				CRIDA
+
 				</Link>
 				<button
 					className="lg:hidden text-white focus:outline-none"
