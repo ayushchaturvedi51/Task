@@ -54,6 +54,7 @@ export const distributors = pgTable('distributors', {
   websiteUrl: varchar('website_url', { length: 255 }),
   createdAt: timestamp('created_at').defaultNow(),
   updatedAt: timestamp('updated_at').defaultNow(),
+  xpBalance: integer('xp_balance').notNull(),
 });
 
 // Define relations
