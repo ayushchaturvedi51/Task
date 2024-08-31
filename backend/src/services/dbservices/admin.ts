@@ -8,6 +8,8 @@ export class Admin {
   static  updateXp=async(fromUserId:number,toUserId:number,xpAmount:any):Promise<any>=>{
     try {
       await postgresdb.transaction(async (tx) => {
+
+        // await tx.select({distributors.xpBalance}).from(distributors).where
         await tx.update(distributors).set({
           xpBalance: sql`${distributors.xpBalance}-${xpAmount}`
         }).where(eq(distributors.id,fromUserId))

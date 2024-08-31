@@ -36,7 +36,7 @@ export class User{
           }
         })
         if(!getUser) throw new Error("You are not authorized")
-        const checkPassword=await postgresdb.select({password:users.password}).from(admins).where(and(eq(admins.password,getUser.password),eq(admins.role,getUser.role)))
+        const checkPassword=await postgresdb.select({password:admins.password}).from(admins).where(and(eq(admins.password,getUser.password),eq(admins.role,getUser.role)))
         if(!checkPassword) throw new Error("Invalid Password")
   
         const token = setUser({adminId:getUser.id})

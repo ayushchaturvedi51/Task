@@ -82,12 +82,17 @@ export const adminRelations=relations(admins,({many})=>({
   distributors:many(distributors)
 }))
 
-export const usersRelations = relations(users, ({ many }) => ({
+export const usersRelations = relations(users, ({ many,one }) => ({
   xpTransactionsSent: many(xpTransactions, { relationName: 'fromUser' }),
   xpTransactionsReceived: many(xpTransactions, { relationName: 'toUser' }),
   achievements: many(achievements),
   marketplaceItems: many(marketplaceItems),
   distributor: many(distributors),
+  admins: one(admins, {
+    fields: [users.adminId
+    ],
+    references: [admins.id],
+  }),
 }));
 
 export const xpTransactionsRelations = relations(xpTransactions, ({ one }) => ({

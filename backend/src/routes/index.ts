@@ -1,6 +1,6 @@
 import express from "express"
 import auth from "./auth"
-import user from './admin'
+import admin from './admin'
 import distributor from './distributor'
 import market from './market'
 import achievement from './achievements'
@@ -14,8 +14,8 @@ const defaultRoutes = [
     route: auth,
   },
   {
-    path:"/user",
-    route:user
+    path:"/admin",
+    route:admin
   },
   {
     path:"/distributor",
