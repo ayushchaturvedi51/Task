@@ -53,9 +53,10 @@ export const achievements = pgTable('achievements', {
 
 export const marketplaceItems:any = pgTable('marketplace_items', {
   id: serial('id').primaryKey(),
+  userId: integer('user_id').references(() => users.id),
   name: varchar('name', { length: 100 }).notNull(),
   description: varchar('description'),
-  distributorId: integer('distributor_id').references(() => users.id),
+  distributorId: integer('distributor_id').references(() => distributors.id),
   xpPrice: integer('xp_price').notNull(),
   isReedemed:boolean("is_redeemed").default(false),
   createdAt: timestamp('created_at').defaultNow(),
@@ -110,8 +111,12 @@ export const achievementsRelations = relations(achievements, ({ one }) => ({
 }));
 
 export const marketplaceItemsRelations = relations(marketplaceItems, ({ one }) => ({
-  distributor: one(users, {
+  distributor: one(distributors, {
     fields: [marketplaceItems.distributorId],
+    references: [distributors.id],
+  }),
+  users: one(users, {
+    fields: [marketplaceItems.userId],
     references: [users.id],
   }),
 }));

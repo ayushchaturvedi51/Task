@@ -3,8 +3,25 @@ import { setUser } from "../../config/jwttoken";
 import { achievements, distributors, users, xpTransactions } from "../../models/schema";
 import { eq, and, sql } from "drizzle-orm";
 
-export class User {
+export class Admin {
   
+  static  updateXp=async(fromUserId:number,toUserId:number,xpAmount:any):Promise<any>=>{
+    try {
+      await postgresdb.transaction(async (tx) => {
+        await tx.update(distributors).set({
+          xpBalance: sql`${distributors.xpBalance}-${xpAmount}`
+        }).where(eq(distributors.id,fromUserId))
+
+        await tx.update(users).set({
+          xpBalance: sql`${users.xpBalance}+${xpAmount}`
+        }).where(eq(users.id,toUserId))
+
+      })
+      
+    } catch (error) {
+      throw new Error(error)
+    }
+  }
 
   static async updateUserEp(userId: number, xp: number) {
     try {

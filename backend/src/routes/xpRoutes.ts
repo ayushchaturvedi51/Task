@@ -1,6 +1,7 @@
 import express from "express";
-import { User } from "../services/dbservices/admin";
 import { sendMail } from "../helper/sendMail";
+import dbservices from "../services/dbservices";
+import { Admin } from "../services/dbservices/admin";
 
 const app = express.Router();
 
@@ -10,7 +11,7 @@ app.post("/awards", async (req, res) => {
   const { userId, xpPoints } = data;
   try {
     // Database operation to insert awards
-    const user = await User.updateUserEp(Number(userId), Number(xpPoints));
+    const user = await Admin.updateUserEp(Number(userId), Number(xpPoints));
     // @ts-ignore
     const fromAchievement = await User.updateAchievements(user.id,"rewarded",xpPoints)
     // @ts-ignore
@@ -26,8 +27,8 @@ app.post("/purchase", async (req, res) => {
   const { userId, xpPoints } = data;
   try {
     // Database operation to insert purchases
-    const user = await User.updateUserEp(Number(userId), Number(xpPoints));
-    const admin = await User.updateAdminPoints(Number(xpPoints));
+    const user = await Admin.updateUserEp(Number(userId), Number(xpPoints));
+    const admin = await Admin.updateAdminPoints(Number(xpPoints));
     // @ts-ignore
     const transaction = await User.createTransaction(xpPoints,"Purchases",user.id,admin.id);
     res.status(200).send({
@@ -47,11 +48,7 @@ app.post("/transfer", async (req, res) => {
   try {
     const data = req.body.data;
     const { fromUserId, toUserId, xpPoints } = data;
-    // Database operation to insert transfers
-    const fromUser = await User.updateUserEp(Number(fromUserId), -Number(xpPoints));
-    const toUser = await User.updateUserEp(Number(toUserId), Number(xpPoints));
-    // @ts-ignore
-    const transaction = await User.createTransaction(xpPoints,"transfer",fromUser?.id,toUser?.id);
+    await dbservices.Admin.updateXp(fromUserId,toUserId,xpPoints)
   
     res.status(200).send({
       message:
@@ -72,7 +69,7 @@ app.post("/transfer", async (req, res) => {
 
 app.get("/transactions",async (req,res)=>{
   try {
-    const transactions = await User.getTransactions()
+    const transactions = await Admin.getTransactions()
     res.status(200).send({ transactions, message: "Transactions fetched successfully", status: true });
   } catch (error) {
     res.status(500).json({status:false,message:"Error while getting the transactions..!"})
