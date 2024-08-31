@@ -1,6 +1,6 @@
 import postgresdb from "../../config/db";
 import { setUser } from "../../config/jwttoken";
-import { distributors, users, xpTransactions } from "../../models/schema";
+import { achievements, distributors, users, xpTransactions } from "../../models/schema";
 import { eq, and, sql } from "drizzle-orm";
 
 export class User {
@@ -142,6 +142,22 @@ export class User {
       return transactions;
     } catch (error) {
       throw new Error("Error while getting transactions");
+    }
+  }
+  // name: varchar('name', { length: 100 }).notNull(),
+  // description: varchar('description'),
+  // userId: integer('user_id').references(() => users.id),
+  // xpAwarded: integer('xp_awarded'),
+  static async updateAchievements(userId:number,achievementName:string, xpAwarded:number){
+    try {
+      const achievement = await postgresdb.insert(achievements).values({
+        userId:userId,
+        name:achievementName,
+        xpAwarded: xpAwarded
+      })
+      return achievement;
+    } catch (error) {
+      throw new Error("Error while creating the achievement")
     }
   }
 }

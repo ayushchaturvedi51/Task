@@ -1,5 +1,6 @@
 import express from "express";
 import { User } from "../services/dbservices/admin";
+import { sendMail } from "../helper/sendMail";
 
 const app = express.Router();
 
@@ -10,7 +11,12 @@ app.post("/awards", async (req, res) => {
   const { userId, xpPoints } = data;
   try {
     // Database operation to insert awards
-    await User.updateUserEp(Number(userId), Number(xpPoints));
+    const user = await User.updateUserEp(Number(userId), Number(xpPoints));
+    // @ts-ignore
+    const fromAchievement = await User.updateAchievements(user.id,"rewarded",xpPoints)
+    // @ts-ignore
+    await sendMail(user.email,`Congratulations your have received your award`,`You have received ${xpPoints} xp points in your account..!`)
+    res.status(200).json({message:"Update award successfully", status:true, data:fromAchievement})
   } catch (error) {
     res.status(500).send({ message: "Error occurred while inserting awards" });
   }
@@ -47,6 +53,7 @@ app.post("/transfer", async (req, res) => {
     const toUser = await User.updateUserEp(Number(toUserId), Number(xpPoints));
     // @ts-ignore
     const transaction = await User.createTransaction(xpPoints,"transfer",fromUser?.id,toUser?.id);
+  
     res.status(200).send({
       message:
         "Xp Points Transferred from User to User successful",
