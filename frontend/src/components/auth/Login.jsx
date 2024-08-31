@@ -1,23 +1,19 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate, Link } from "react-router-dom";
-import { useAuth } from "../contexts/AuthContext";
+import { useAuth } from "../../contexts/AuthContext";
 import { FiMail, FiLock } from "react-icons/fi";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 
 function Login() {
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
+	const [role, setRole] = useState("user");
 	const [loading, setLoading] = useState(false);
 	const [error, setError] = useState("");
 	const navigate = useNavigate();
 	const { isLoggedIn, login } = useAuth();
 
-	useEffect(() => {
-		if (isLoggedIn) {
-			navigate("/profile");
-		}
-	}, [isLoggedIn, navigate]);
 
 	const handleLogin = async (e) => {
 		e.preventDefault();
@@ -25,20 +21,18 @@ function Login() {
 		try {
 			const res = await axios.post(
 				"/api/users/login",
-				{ email, password },
+				{ email, password, role },
 				{ withCredentials: true }
 			);
 			if (res.status === 200) {
-				const { role } = res.data;
 				login();
-
-				// Navigate based on the user's role
+				// Navigate based on the role
 				if (role === "admin") {
 					navigate("/admin-dashboard");
-				} else if (role === "distributor") {
-					navigate("/distributor-dashboard");
+				} else if (role === "dashboard") {
+					navigate("/dashboard");
 				} else {
-					navigate("/user-dashboard");
+					navigate("/profile");
 				}
 			}
 		} catch (err) {
@@ -83,6 +77,43 @@ function Login() {
 							onChange={(e) => setPassword(e.target.value)}
 							required
 						/>
+					</div>
+					<div className="flex justify-between items-center mt-4">
+						<div className="text-white">
+							<label className="mr-4">
+								<input
+									type="radio"
+									name="role"
+									value="user"
+									checked={role === "user"}
+									onChange={() => setRole("user")}
+									className="mr-1"
+								/>
+								User
+							</label>
+							<label className="mr-4">
+								<input
+									type="radio"
+									name="role"
+									value="admin"
+									checked={role === "admin"}
+									onChange={() => setRole("admin")}
+									className="mr-1"
+								/>
+								Admin
+							</label>
+							<label>
+								<input
+									type="radio"
+									name="role"
+									value="dashboard"
+									checked={role === "dashboard"}
+									onChange={() => setRole("dashboard")}
+									className="mr-1"
+								/>
+								Dashboard
+							</label>
+						</div>
 					</div>
 					<div className="flex items-center justify-between mt-4">
 						<p className="text-white">

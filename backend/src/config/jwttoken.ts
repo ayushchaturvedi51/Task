@@ -6,9 +6,12 @@ const secret=process.env.SECRET_KEY;
 
 
 const setUser=(payload )=>{
-  const {userId}=payload
+  const {adminId,userId,distributorId}=payload
+  
   return jwt.sign({
-      userId:userId,
+    userId:userId || undefined,
+    adminId:adminId || undefined,
+    distributorId:distributorId || undefined
   },secret,{
     expiresIn:'24h'
   })

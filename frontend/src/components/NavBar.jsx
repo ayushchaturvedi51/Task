@@ -49,9 +49,9 @@ const NavBar = () => {
 						<li>
 							<Link
 								className="text-white hover:text-gray-300 text-lg"
-								to="/auctions"
+								to="/dashboard/admin"
 							>
-								Auctions
+								Dashboard
 							</Link>
 						</li>
 						{!isLoggedIn && (

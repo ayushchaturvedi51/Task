@@ -1,6 +1,7 @@
 import express from "express"
 import auth from "./auth"
-import admin from './admin'
+import user from './admin'
+import distributor from './distributor'
 
 const router=express.Router()
 
@@ -10,8 +11,12 @@ const defaultRoutes = [
     route: auth,
   },
   {
-    path:"/admin",
-    route:admin
+    path:"/user",
+    route:user
+  },
+  {
+    path:"/distributor",
+    route:distributor
   }
 ];
 

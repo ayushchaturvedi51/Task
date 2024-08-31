@@ -51,19 +51,19 @@ const Home = () => {
 				</p>
 				<div className="grid w-full grid-cols-1 gap-8 md:grid-cols-3">
 					<FeatureCard
-						title="Live Auctions"
+						title="Live Transaction"
 						description="Participate in real-time auctions happening now and place your bids instantly."
 						gradient="from-teal-400 to-blue-500"
 						icon={<LiveIcon />}
 					/>
 					<FeatureCard
-						title="Strategize Bids"
-						description="Preview and prepare for auctions to strategize your bidding approach."
+						title="Manage User"
+						description="Preview and prepare f  to strategize approach of user."
 						gradient="from-purple-400 to-pink-500"
 						icon={<CalendarIcon />}
 					/>
 					<FeatureCard
-						title="Manage Your Auctions"
+						title=""
 						description="Effortlessly create, edit, and oversee your auction items with our intuitive tools."
 						gradient="from-green-400 to-blue-400"
 						icon={<SettingsIcon />}

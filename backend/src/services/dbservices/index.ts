@@ -1,4 +1,4 @@
-import { User } from "./admin";
+import { User } from "./user";
 export default{
   User
 }

@@ -9,7 +9,6 @@ function Signup() {
 	const [username, setUsername] = useState("");
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
-	const [confirmPassword, setConfirmPassword] = useState("");
 	const [loading, setLoading] = useState(false);
 	const [error, setError] = useState("");
 	const navigate = useNavigate();
@@ -26,9 +25,9 @@ function Signup() {
 		setLoading(true);
 		try {
 			const res = await axios.post(
-				"https://auctionwebsitebackend.onrender.com/api/users/register",
+				"https://ca72-2401-4900-8843-ffff-00-51-2a0b.ngrok-free.app/auth/register",
 				// "http://localhost:5000/api/users/register",
-				{ username, email, password, confirmPassword },
+				{ username, email, password },
 				{ withCredentials: true }
 			);
 			if (res.status === 201) {
@@ -85,17 +84,6 @@ function Signup() {
 							placeholder="Password"
 							value={password}
 							onChange={(e) => setPassword(e.target.value)}
-							required
-						/>
-					</div>
-					<div className="flex items-center border rounded-md border-gray-600 bg-gray-700">
-						<FiLock className="w-6 h-6 text-gray-400 ml-3" />
-						<input
-							type="password"
-							className="w-full px-4 py-2 bg-gray-700 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-400"
-							placeholder="Confirm Password"
-							value={confirmPassword}
-							onChange={(e) => setConfirmPassword(e.target.value)}
 							required
 						/>
 					</div>
