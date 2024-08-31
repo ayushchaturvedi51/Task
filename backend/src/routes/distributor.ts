@@ -6,6 +6,7 @@ import authenticateUser from "../services/authenticate"
 const router=express.Router()
 
 
+router.post("/",controllers.userController.loginDistributor)
 router.get("/profile/:id",authenticateUser,controllers.userController.getDistributorsProfile)
 router.post("/profile/:id",authenticateUser,controllers.userController.updateDistributorProfile)
 

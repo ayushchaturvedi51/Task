@@ -16,6 +16,7 @@
     "cookie": "^0.6.0",
     "cookie-session": "^2.1.0",
     "cookie-signature": "^1.0.6",
+    "cors": "^2.8.5",
     "csv-parser": "^3.0.0",
     "csvtojson": "^2.0.10",
     "debug": "^2.6.9",
@@ -97,6 +98,7 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@types/cors": "^2.8.17",
     "@types/express": "^4.17.21",
     "@types/node": "^20.14.4",
     "drizzle-kit": "^0.22.7"

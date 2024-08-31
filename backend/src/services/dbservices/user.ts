@@ -14,7 +14,7 @@ export class User{
         password:data.password,
       }).returning({email:users.email,username:users.username,role:users.role,id:users.id})
       const token = setUser({userId:registerUser[0].id})
-      return {token,registerUser}
+      return {token}
       
     }catch(error){
       throw new Error(error)
@@ -24,7 +24,7 @@ export class User{
 
   static login=async(details:any):Promise<any>=>{
     try{
-      if (details.role==admins){
+      if (details.role=="admin"){
         const getUser=await postgresdb.query.admins.findFirst({
           where:and(eq(admins.email,details.email),eq(admins.role,details.role)),
           columns:{
@@ -40,7 +40,7 @@ export class User{
         if(!checkPassword) throw new Error("Invalid Password")
   
         const token = setUser({adminId:getUser.id})
-        return {token,getUser}
+        return {token}
       }else{
         const getUser=await postgresdb.query.users.findFirst({
           where:and(eq(users.email,details.email),eq(users.role,details.role)),
@@ -146,6 +146,31 @@ export class User{
       }else{
         throw new Error("Error in Updating Profile")
       }
+      
+    } catch (error) {
+      throw new Error(error)
+    }
+  }
+
+  static createDistributor=async(adminId:number,data:any):Promise<any>=>{
+    try {
+      await postgresdb.insert(distributors).values({
+        adminId:adminId,
+        userName:data.username,
+        organizationName:data.organizationname,
+        phoneNumber:data.phoneNumber
+      })
+      
+    } catch (error) {
+      throw new Error(error)
+    }
+  }
+
+  static loginDistributor=async(data:any):Promise<any>=>{
+    try {
+      await postgresdb.query.distributors.findFirst({
+        where:eq(distributors.phoneNumber,data.phoneNumber)
+      })
       
     } catch (error) {
       throw new Error(error)

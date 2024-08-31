@@ -10,6 +10,8 @@ const router=express.Router()
 // router.post("/login",validateRequest(validators.Authvalidators.loginUser),controllers.userController.login)
 router.get("/users",authenticateUser,controllers.userController.getAllusers)
 router.get("/distributors",authenticateUser,controllers.userController.getAllDistributors)
+router.post("/distributor",authenticateUser,controllers.userController.createDistributor)
+
 
 
 export default router

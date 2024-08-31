@@ -1,4 +1,4 @@
-import { serial, pgTable, varchar, integer, timestamp, pgEnum } from "drizzle-orm/pg-core";
+import { serial, pgTable, varchar, integer, timestamp, pgEnum,boolean } from "drizzle-orm/pg-core";
 import { relations } from "drizzle-orm";
 
 // Define enums
@@ -13,6 +13,8 @@ export const admins = pgTable('admins', {
   password: varchar('password', { length: 255 }).notNull(),
   role: varchar('role').default('admin'),
   xpBalance: integer('xp_balance').default(100000),
+  distributorLoginId:varchar("distributor_login_id"),
+  distributorLoginPassword:varchar("distributor_login_password"),
   createdAt: timestamp('created_at').defaultNow(),
   updatedAt: timestamp('updated_at').defaultNow(),
 });
@@ -31,10 +33,12 @@ export const users = pgTable('users', {
 
 export const xpTransactions = pgTable('xp_transactions', {
   id: serial('id').primaryKey(),
-  fromUserId: integer('from_user_id').references(() => users.id),
-  toUserId: integer('to_user_id').references(() => users.id),
+  fromUserId: integer('from_user_id'),
+  fromUserRole:varchar("from_user_role"),
+  toUserId: integer('to_user_id'),
+  toUserRole:varchar("to_user_role"),
   xpAmount: integer('xp_amount').notNull(),
-  transactionType: transactionTypeEnum('transaction_type').notNull(),
+  transactionType: varchar('transaction_type').default("transfer"),
   createdAt: timestamp('created_at').defaultNow(),
   updatedAt: timestamp('updated_at').defaultNow(),
 });
@@ -49,12 +53,13 @@ export const achievements = pgTable('achievements', {
   updatedAt: timestamp('updated_at').defaultNow(),
 });
 
-export const marketplaceItems = pgTable('marketplace_items', {
+export const marketplaceItems:any = pgTable('marketplace_items', {
   id: serial('id').primaryKey(),
   name: varchar('name', { length: 100 }).notNull(),
   description: varchar('description'),
   distributorId: integer('distributor_id').references(() => users.id),
   xpPrice: integer('xp_price').notNull(),
+  isReedemed:boolean("is_redeemed").default(false),
   createdAt: timestamp('created_at').defaultNow(),
   updatedAt: timestamp('updated_at').defaultNow(),
 });
@@ -63,6 +68,8 @@ export const distributors = pgTable('distributors', {
   id: serial('id').primaryKey(),
   adminId: integer('admin_id').references(() => admins.id),
   userName:varchar("user_name"),
+  phoneNumber:integer("phone_number"),
+  role: varchar('role').default('distributor'),
   organizationName: varchar('organization_name', { length: 100 }).notNull(),
   createdAt: timestamp('created_at').defaultNow(),
   updatedAt: timestamp('updated_at').defaultNow(),
@@ -110,9 +117,9 @@ export const marketplaceItemsRelations = relations(marketplaceItems, ({ one }) =
   }),
 }));
 
-export const distributorsRelations = relations(distributors, ({ one }) => ({
-  user: one(users, {
+export const distributorsRelations = relations(distributors, ({ one,many }) => ({
+  admins: one(admins, {
     fields: [distributors.adminId],
-    references: [users.id],
+    references: [admins.id],
   }),
 }));
