@@ -1,8 +1,10 @@
 import express from "express"
 import auth from "./auth"
-import admin from './admin'
-import achievements from  './achievements';
+import user from './admin'
+import distributor from './distributor'
 import market from './market'
+import achievement from './achievements'
+
 const router=express.Router()
 
 const defaultRoutes = [
@@ -11,16 +13,19 @@ const defaultRoutes = [
     route: auth,
   },
   {
-    path:"/admin",
-    route:admin
+    path:"/user",
+    route:user
   },
   {
-    path: "/achievements",
-    route: achievements
-  },
-  {
-    path: "/market",
-    route: market
+    path:"/distributor",
+    route:distributor
+  },{
+    path:"/market",
+    route:market
+  }
+  ,{
+    path:"/achievement",
+    route:achievement
   }
 ];
 

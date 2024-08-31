@@ -2,17 +2,29 @@ import { serial, pgTable, varchar, integer, timestamp, pgEnum } from "drizzle-or
 import { relations } from "drizzle-orm";
 
 // Define enums
-const roleEnum = pgEnum('role', ['user', 'admin', 'distributor']);
 const transactionTypeEnum = pgEnum('transaction_type', ['earn', 'purchase', 'transfer', 'redeem']);
 
 // Define tables
-export const users = pgTable('users', {
+
+export const admins = pgTable('admins', {
   id: serial('id').primaryKey(),
   username: varchar('username', { length: 50 }).notNull().unique(),
   email: varchar('email', { length: 100 }).notNull().unique(),
   password: varchar('password', { length: 255 }).notNull(),
-  role: roleEnum('role').default('user'),
-  xpBalance: integer('xp_balance').default(0),
+  role: varchar('role').default('admin'),
+  xpBalance: integer('xp_balance').default(100000),
+  createdAt: timestamp('created_at').defaultNow(),
+  updatedAt: timestamp('updated_at').defaultNow(),
+});
+
+export const users = pgTable('users', {
+  id: serial('id').primaryKey(),
+  adminId:integer('admin_id').references(()=>admins.id),
+  username: varchar('username', { length: 50 }).notNull().unique(),
+  email: varchar('email', { length: 100 }).notNull().unique(),
+  password: varchar('password', { length: 255 }).notNull(),
+  role: varchar('role').default('user'),
+  xpBalance: integer('xp_balance').default(10),
   createdAt: timestamp('created_at').defaultNow(),
   updatedAt: timestamp('updated_at').defaultNow(),
 });
@@ -49,14 +61,20 @@ export const marketplaceItems = pgTable('marketplace_items', {
 
 export const distributors = pgTable('distributors', {
   id: serial('id').primaryKey(),
-  userId: integer('user_id').references(() => users.id),
+  adminId: integer('admin_id').references(() => admins.id),
+  userName:varchar("user_name"),
   organizationName: varchar('organization_name', { length: 100 }).notNull(),
-  websiteUrl: varchar('website_url', { length: 255 }),
   createdAt: timestamp('created_at').defaultNow(),
   updatedAt: timestamp('updated_at').defaultNow(),
 });
 
 // Define relations
+
+export const adminRelations=relations(admins,({many})=>({
+  users:many(users),
+  distributors:many(distributors)
+}))
+
 export const usersRelations = relations(users, ({ many }) => ({
   xpTransactionsSent: many(xpTransactions, { relationName: 'fromUser' }),
   xpTransactionsReceived: many(xpTransactions, { relationName: 'toUser' }),
@@ -94,7 +112,7 @@ export const marketplaceItemsRelations = relations(marketplaceItems, ({ one }) =
 
 export const distributorsRelations = relations(distributors, ({ one }) => ({
   user: one(users, {
-    fields: [distributors.userId],
+    fields: [distributors.adminId],
     references: [users.id],
   }),
 }));

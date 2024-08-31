@@ -1,5 +1,5 @@
 
-import { userController } from "./admin";
+import { userController } from "./user";
 import { achievementsController } from "./achievements";
 import { market } from "./marke";
 
