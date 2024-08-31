@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate, Link } from "react-router-dom";
-import { useAuth } from "../../contexts/AuthContext";
+// import { useAuth } from "../../contexts/AuthContext";
 import { FiUser, FiMail, FiLock } from "react-icons/fi";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 
@@ -12,13 +12,13 @@ function Signup() {
 	const [loading, setLoading] = useState(false);
 	const [error, setError] = useState("");
 	const navigate = useNavigate();
-	const { isLoggedIn } = useAuth();
+	// const { isLoggedIn } = useAuth();
 
-	useEffect(() => {
-		if (isLoggedIn) {
-			navigate("/profile");
-		}
-	}, [isLoggedIn, navigate]);
+	// useEffect(() => {
+	// 	if (isLoggedIn) {
+	// 		navigate("/profile");
+	// 	}
+	// }, [isLoggedIn, navigate]);
 
 	const handleSignup = async (e) => {
 		e.preventDefault();
@@ -26,11 +26,9 @@ function Signup() {
 		try {
 			const res = await axios.post(
 				"https://ca72-2401-4900-8843-ffff-00-51-2a0b.ngrok-free.app/auth/register",
-				// "http://localhost:5000/api/users/register",
 				{ username, email, password },
-				{ withCredentials: true }
 			);
-			if (res.status === 201) {
+			if (res.status === 200) {
 				navigate("/login");
 			}
 		} catch (err) {
