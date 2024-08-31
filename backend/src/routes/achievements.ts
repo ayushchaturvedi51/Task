@@ -8,8 +8,7 @@ const router=express.Router()
 
 
 
-router.get("/",controllers.achievementsController.allachievements)
-router.post("/",controllers.achievementsController.creteAchievement)
-router.get('/:id' , controllers.achievementsController.specificAchievements)
+router.get("/", authenticateUser ,controllers.achievementsController.allachievements)
+router.get('/:id' , authenticateUser ,controllers.achievementsController.specificAchievements)
 
 export default router

@@ -15,15 +15,6 @@ export class achievementsController {
         }
     }
 
-    static creteAchievement = async (req: Request, res: Response): Promise<any> => {
-        try {
-            
-            const newAchievement = await dbservices.achievementsController.createAchievement(req.body, req["user"]["id"]);
-            return res.status(201).send({ status: true, message: "Achievement Created", data: newAchievement });
-        } catch (error) {
-            return res.status(500).send({ status: false, message: error.message });
-        }
-    }
     
     static specificAchievements = async (req: Request, res: Response): Promise<any> => {
         try {

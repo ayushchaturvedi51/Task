@@ -2,13 +2,13 @@ import { promises } from "dns"
 import postgresdb from "../../config/db"
 import { setUser } from "../../config/jwttoken"
 import { users ,achievements,marketplaceItems} from "../../models/schema"
-import { eq,and } from "drizzle-orm"
+import { eq } from "drizzle-orm"
 
 export class market{
       
     static getAvailableItems =async():Promise<any>=>{
         try{
-            const available = await postgresdb.query.marketplaceItems.findMany({
+            const availableitems = await postgresdb.query.marketplaceItems.findMany({
                 columns:{
                     id:true,
                     name:true,
@@ -16,6 +16,7 @@ export class market{
                     xpPrice:true
                 }
             })
+            return availableitems;
         }catch(error){
             throw new Error
         }
@@ -52,5 +53,16 @@ export class market{
         }catch(error){
             throw new Error
         }
+    }
+
+
+    static redeemItem = async(marketplaceItemId:number,userId:number): Promise<any>=>{
+        const update =await postgresdb.update(marketplaceItems).set({
+            isRedeemed:true
+            userId:userId
+        }).where(eq(marketplaceItems.id , marketplaceItemId)).returning({
+            name:marketplaceItems.name
+
+        })
     }
 }

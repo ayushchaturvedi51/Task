@@ -44,39 +44,5 @@ export class achievementsController {
         }
     }
 
-    static createAchievement = async (details: any, userid: number): Promise<any> => {
-        try {
-            const existingAchievement = await postgresdb.query.achievements.findFirst({
-                where: (achievements, { eq, and }) => and(
-                    eq(achievements.name, details.name),
-                    eq(achievements.userId, userid)
-                ),
-                columns: {
-                    id: true,
-                }
-            });
     
-            if (existingAchievement) {
-                return {
-                    status: false,
-                    message: "Achievement with the same name already exists."
-                };
-            }
-    
-            const create = await postgresdb.insert(achievements).values({
-                name: details.name,
-                description: details.description || "",
-                userId: userid,
-                xpAwarded: details.xpAwarded,
-            });
-    
-            return {
-                status: true,
-                message: "Achievement created successfully.",
-                data: create
-            };
-        } catch (error) {
-            throw new Error('Failed to create achievement: ' + error.message);
-        }
-    }    
 }

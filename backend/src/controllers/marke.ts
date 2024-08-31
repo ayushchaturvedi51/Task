@@ -39,4 +39,16 @@ export class market{
             res.status(500).send({status:false, message:error.message})
         }
     }
+
+
+
+    static redeemedItem = async(req: Request , res: Response): Promise<any>=>{
+        try{
+            const marketitemId = req.params.id
+           const userid = req["user"]["userid"]
+           const redeemedItem = await dbservices.market.redeemItem(userid ,parseInt(marketitemId))
+        }catch(error){
+            res.status(500).send({status:false, message:error.message})
+        }
+    }
 }
