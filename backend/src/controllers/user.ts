@@ -44,7 +44,11 @@ export class userController{
 
   static getDistributorsProfile=async(req:Request,res:Response)=>{
     try {
+<<<<<<< HEAD
       const distributorId=req.params.id 
+=======
+      const distributorId=req["user"]["distributorId"]
+>>>>>>> 45376f96ba7031686c4098d3d6f722f3a36d5bca
       const getProfile=await dbservices.User.getDistributorsProfile(parseInt(distributorId))
       res.status(200).send({status:true,message:"Distributor Profile",data:getProfile})  
     } catch (error) {
@@ -54,11 +58,37 @@ export class userController{
 
   static updateDistributorProfile=async(req:Request,res:Response)=>{
     try {
+<<<<<<< HEAD
       const distributorId=req.params.id 
+=======
+      const distributorId=req["user"]["distributorId"]
+>>>>>>> 45376f96ba7031686c4098d3d6f722f3a36d5bca
       const updateDistributorProfile=await dbservices.User.updateDistributorProfile(parseInt(distributorId),req.body)
       res.status(200).send({status:true,message:"Distributor Profile Updated",data:updateDistributorProfile})  
     } catch (error) {
       res.status(500).send({status:false,message:error.message})
     }
   }
+<<<<<<< HEAD
+=======
+
+  static createDistributor=async(req:Request,res:Response)=>{
+    try {
+      const adminId=req["user"]["adminId"]
+      await dbservices.User.createDistributor(parseInt(adminId),req.body)
+      res.status(200).send({status:true,message:"Distributor Profile Created"})  
+    } catch (error) {
+      res.status(500).send({status:false,message:error.message})
+    }
+  }
+
+  static loginDistributor=async(req:Request,res:Response)=>{
+    try {
+      const loginDistributor=await dbservices.User.loginDistributor(req.body)
+      res.status(200).send({status:true,message:"Distributor Login Successfully",data:loginDistributor})  
+    } catch (error) {
+      res.status(500).send({status:false,message:error.message})
+    }
+  }
+>>>>>>> 45376f96ba7031686c4098d3d6f722f3a36d5bca
 }

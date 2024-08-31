@@ -14,7 +14,11 @@ export class User{
         password:data.password,
       }).returning({email:users.email,username:users.username,role:users.role,id:users.id})
       const token = setUser({userId:registerUser[0].id})
+<<<<<<< HEAD
       return {token,registerUser}
+=======
+      return {token}
+>>>>>>> 45376f96ba7031686c4098d3d6f722f3a36d5bca
       
     }catch(error){
       throw new Error(error)
@@ -24,7 +28,11 @@ export class User{
 
   static login=async(details:any):Promise<any>=>{
     try{
+<<<<<<< HEAD
       if (details.role==admins){
+=======
+      if (details.role=="admin"){
+>>>>>>> 45376f96ba7031686c4098d3d6f722f3a36d5bca
         const getUser=await postgresdb.query.admins.findFirst({
           where:and(eq(admins.email,details.email),eq(admins.role,details.role)),
           columns:{
@@ -36,11 +44,19 @@ export class User{
           }
         })
         if(!getUser) throw new Error("You are not authorized")
+<<<<<<< HEAD
         const checkPassword=await postgresdb.select({password:users.password}).from(admins).where(and(eq(admins.password,getUser.password),eq(admins.role,getUser.role)))
         if(!checkPassword) throw new Error("Invalid Password")
   
         const token = setUser({adminId:getUser.id})
         return {token,getUser}
+=======
+        const checkPassword=await postgresdb.select({password:admins.password}).from(admins).where(and(eq(admins.password,getUser.password),eq(admins.role,getUser.role)))
+        if(!checkPassword) throw new Error("Invalid Password")
+  
+        const token = setUser({adminId:getUser.id})
+        return {token}
+>>>>>>> 45376f96ba7031686c4098d3d6f722f3a36d5bca
       }else{
         const getUser=await postgresdb.query.users.findFirst({
           where:and(eq(users.email,details.email),eq(users.role,details.role)),
@@ -151,5 +167,53 @@ export class User{
       throw new Error(error)
     }
   }
+<<<<<<< HEAD
+=======
+
+  static createDistributor=async(adminId:number,data:any):Promise<any>=>{
+    try {
+      await postgresdb.insert(distributors).values({
+        adminId:adminId,
+        userName:data.username,
+        organizationName:data.organizationname,
+        phoneNumber:data.phoneNumber
+      })
+      
+    } catch (error) {
+      throw new Error(error)
+    }
+  }
+
+  static loginDistributor=async(data:any):Promise<any>=>{
+    try {
+      const checkDistributor=await postgresdb.query.distributors.findFirst({
+        where:eq(distributors.phoneNumber,data.phoneNumber),
+        columns:{
+          id:true
+        },
+        with:{
+          admins:{
+            columns:{
+              distributorLoginId:true,
+              distributorLoginPassword:true
+            }
+          }
+        }
+      })
+      if(!checkDistributor){
+        throw new Error("Insert correct Credentials")
+      }
+      
+      if(checkDistributor.admins[0].distributorLoginId==data.loginId && checkDistributor.admins[0].distributorLoginPassword==data.password){
+        const token=setUser({distributorId:checkDistributor.id})
+        return token
+      }
+
+      
+    } catch (error) {
+      throw new Error(error)
+    }
+  }
+>>>>>>> 45376f96ba7031686c4098d3d6f722f3a36d5bca
   
 }
