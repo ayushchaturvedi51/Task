@@ -5,50 +5,6 @@ import { eq, and, sql } from "drizzle-orm";
 
 export class User {
   
-  static register = async (data: any): Promise<any> => {
-    try {
-      const registerUser = await postgresdb
-        .insert(users)
-        .values({
-          username: data.username,
-          email: data.email,
-          password: data.password,
-        })
-        .returning({ userId: users.id });
-      const token = setUser({ userId: registerUser[0].userId });
-      return token;
-    } catch (error) {
-      throw new Error(error);
-    }
-  };
-
-  static login = async (details: any): Promise<any> => {
-    try {
-      const getUser = await postgresdb.query.users.findFirst({
-        where: eq(users.email, details.email),
-        columns: {
-          id: true,
-          password: true,
-          email: true,
-        },
-      });
-      if (!getUser) throw new Error("Insert Correct email");
-      const checkPassword = await postgresdb
-        .select({ password: users.password })
-        .from(users)
-        .where(
-          and(
-            eq(users.password, getUser.password),
-          )
-        );
-      if (!checkPassword) throw new Error("Invalid Password");
-
-      const token = setUser({ userId: getUser.id });
-      return token;
-    } catch (error) {
-      throw new Error(error);
-    }
-  };
 
   static async updateUserEp(userId: number, xp: number) {
     try {
@@ -140,7 +96,7 @@ export class User {
   // description: varchar('description'),
   // userId: integer('user_id').references(() => users.id),
   // xpAwarded: integer('xp_awarded'),
-  static async updateAchievements(userId:number,achievementName:string, xpAwarded:number){
+  static async insertAchievements(userId:number,achievementName:string, xpAwarded:number){
     try {
       const achievement = await postgresdb.insert(achievements).values({
         userId:userId,

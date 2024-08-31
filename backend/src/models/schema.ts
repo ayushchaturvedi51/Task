@@ -33,10 +33,8 @@ export const users = pgTable('users', {
 
 export const xpTransactions = pgTable('xp_transactions', {
   id: serial('id').primaryKey(),
-  fromUserId: integer('from_user_id'),
-  fromUserRole:varchar("from_user_role"),
-  toUserId: integer('to_user_id'),
-  toUserRole:varchar("to_user_role"),
+  fromUserId: integer('from_user_id').references(()=>distributors.id),
+  toUserId: integer('to_user_id').references(()=>users.id),
   xpAmount: integer('xp_amount').notNull(),
   transactionType: varchar('transaction_type').default("transfer"),
   createdAt: timestamp('created_at').defaultNow(),

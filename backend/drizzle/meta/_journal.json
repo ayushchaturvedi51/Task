@@ -15,6 +15,13 @@
       "when": 1725105024323,
       "tag": "0001_charming_texas_twister",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1725107217017,
+      "tag": "0002_milky_stellaris",
+      "breakpoints": true
     }
   ]
 }
