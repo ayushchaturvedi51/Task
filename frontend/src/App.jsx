@@ -10,7 +10,6 @@ import DistributorDashboard from "./components/Dashboard/DistributorDashboard";
 function App() {
     return (
         <BrowserRouter>
-            <NavBar />
             <Routes>
                 <Route path="/" element={<Home />} />
                 <Route path="/signup" element={<Signup />} />

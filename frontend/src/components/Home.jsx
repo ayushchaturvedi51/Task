@@ -1,7 +1,9 @@
 import PropTypes from "prop-types";
+import NavBar from "./NavBar";
 
 const Home = () => {
 	const Logo = () => (
+		<>
 		<div className="flex items-center text-6xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-pink-500 via-red-500 to-yellow-500">
 			<svg
 				className="w-16 h-16 mr-4"
@@ -31,9 +33,12 @@ const Home = () => {
 			</svg>
 			CRIDA
 		</div>
+		</>
 	);
 
 	return (
+		<>
+		<NavBar/>
 		<div className="flex flex-col items-center justify-center w-full min-h-screen p-4 overflow-hidden text-white bg-gradient-to-br from-gray-900 to-black">
 			<div className="w-full mx-auto max-w-7xl">
 				<div className="flex flex-col items-center mb-8">
@@ -71,6 +76,7 @@ const Home = () => {
 				</div>
 			</div>
 		</div>
+		</>
 	);
 };
 
