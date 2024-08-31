@@ -12,6 +12,7 @@ function AdminDashboard() {
 
 	useEffect(() => {
 		const fetchData = async () => {
+      console.log("user dashboard call")
 			setLoading(true);
 			try {
 				// Fetch users
