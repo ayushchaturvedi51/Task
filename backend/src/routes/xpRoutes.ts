@@ -4,7 +4,6 @@ import { sendMail } from "../helper/sendMail";
 
 const app = express.Router();
 
-// Middleware for the distributor
 
 app.post("/awards", async (req, res) => {
   const data = req.body.data;
@@ -80,4 +79,5 @@ app.get("/transactions",async (req,res)=>{
   }
 })
 
+export default app
 

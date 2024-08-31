@@ -4,6 +4,7 @@ import user from './admin'
 import distributor from './distributor'
 import market from './market'
 import achievement from './achievements'
+import xp from './xpRoutes'
 
 const router=express.Router()
 
@@ -26,6 +27,10 @@ const defaultRoutes = [
   ,{
     path:"/achievement",
     route:achievement
+  },
+  {
+    path:'/xp',
+    route:xp
   }
 ];
 
