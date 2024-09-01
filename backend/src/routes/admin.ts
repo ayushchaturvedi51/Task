@@ -1,7 +1,5 @@
 import express from "express"
 import controllers from "../controllers"
-import { validateRequest } from "../validators/validateRequest"
-import validators from "../validators"
 import authenticateUser from "../services/authenticate"
 const router=express.Router()
 
@@ -11,7 +9,7 @@ const router=express.Router()
 router.get("/users",authenticateUser,controllers.userController.getAllusers)
 router.get("/distributors",authenticateUser,controllers.userController.getAllDistributors)
 router.post("/distributor",authenticateUser,controllers.userController.createDistributor)
-
+router.delete("/:email",authenticateUser,controllers.userController.deleteUser)
 
 
 export default router

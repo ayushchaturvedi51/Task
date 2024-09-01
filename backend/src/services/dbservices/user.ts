@@ -1,3 +1,4 @@
+import { truncate } from "fs/promises";
 import postgresdb from "../../config/db"
 import { setUser } from "../../config/jwttoken"
 import {  admins, distributors, users } from "../../models/schema"
@@ -57,7 +58,7 @@ export class User{
         if(!checkPassword) throw new Error("Invalid Password")
   
         const token = setUser({userId:getUser.id})
-        return {token,getUser}
+        return {token}
 
       }
             
@@ -182,15 +183,24 @@ export class User{
           }
         }
       })
+
       if(!checkDistributor){
         throw new Error("Insert correct Credentials")
       }
-      
-      if(checkDistributor.admins[0].distributorLoginId==data.loginId && checkDistributor.admins[0].distributorLoginPassword==data.password){
+      if(checkDistributor.admins["distributorLoginId"]==data.loginId && checkDistributor.admins["distributorLoginPassword"]==data.password){
         const token=setUser({distributorId:checkDistributor.id})
         return token
       }
 
+      
+    } catch (error) {
+      throw new Error(error)
+    }
+  }
+
+  static deleteUser=async(email:string,adminId:number):Promise<any>=>{
+    try {
+      await postgresdb.delete(users).where(and(eq(users.email,email),eq(users.adminId,adminId)))
       
     } catch (error) {
       throw new Error(error)

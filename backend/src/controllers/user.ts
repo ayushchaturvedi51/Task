@@ -80,4 +80,15 @@ export class userController{
       res.status(500).send({status:false,message:error.message})
     }
   }
+
+  static deleteUser=async(req:Request,res:Response)=>{
+    try {
+      const email=req.params.email
+      const adminId=req["user"]["adminId"]
+      await dbservices.User.deleteUser(email,adminId)
+      res.status(200).send({status:true,message:"Distributor deleted Successfully"})  
+    } catch (error) {
+      res.status(500).send({status:false,message:error.message})
+    }
+  }
 }
