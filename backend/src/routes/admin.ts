@@ -8,6 +8,8 @@ const router=express.Router()
 // router.post("/login",validateRequest(validators.Authvalidators.loginUser),controllers.userController.login)
 router.get("/users",authenticateUser,controllers.userController.getAllusers)
 router.get("/distributors",authenticateUser,controllers.userController.getAllDistributors)
+<<<<<<< HEAD
+=======
 router.post("/distributor",authenticateUser,controllers.userController.createDistributor)
 router.delete("/:email",authenticateUser,controllers.userController.deleteUser)
 

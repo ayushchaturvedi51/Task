@@ -1,4 +1,4 @@
-import { serial, pgTable, varchar, integer, timestamp, pgEnum,boolean } from "drizzle-orm/pg-core";
+import { serial, pgTable, varchar, integer, timestamp, pgEnum } from "drizzle-orm/pg-core";
 import { relations } from "drizzle-orm";
 
 // Define enums
@@ -37,7 +37,7 @@ export const xpTransactions = pgTable('xp_transactions', {
   fromUserRole:varchar("from_user_role"),
   toUserId: integer('to_user_id').references(()=>users.id),
   xpAmount: integer('xp_amount').notNull(),
-  transactionType: varchar('transaction_type').default("transfer"),
+  transactionType: transactionTypeEnum('transaction_type').notNull(),
   createdAt: timestamp('created_at').defaultNow(),
   updatedAt: timestamp('updated_at').defaultNow(),
 });
@@ -67,12 +67,10 @@ export const distributors = pgTable('distributors', {
 
 export const marketplaceItems:any = pgTable('marketplace_items', {
   id: serial('id').primaryKey(),
-  userId: integer('user_id').references(() => users.id),
   name: varchar('name', { length: 100 }).notNull(),
   description: varchar('description'),
-  distributorId: integer('distributor_id').references(() => distributors.id),
+  distributorId: integer('distributor_id').references(() => users.id),
   xpPrice: integer('xp_price').notNull(),
-  isReedemed:boolean("is_redeemed").default(false),
   createdAt: timestamp('created_at').defaultNow(),
   updatedAt: timestamp('updated_at').defaultNow(),
 });
@@ -83,16 +81,12 @@ export const adminRelations=relations(admins,({many})=>({
   distributors:many(distributors)
 }))
 
-export const usersRelations = relations(users, ({ many,one }) => ({
+export const usersRelations = relations(users, ({ many }) => ({
   xpTransactionsSent: many(xpTransactions, { relationName: 'fromUser' }),
   xpTransactionsReceived: many(xpTransactions, { relationName: 'toUser' }),
   achievements: many(achievements),
   marketplaceItems: many(marketplaceItems),
-  admins: one(admins, {
-    fields: [users.adminId
-    ],
-    references: [admins.id],
-  }),
+  distributor: many(distributors),
 }));
 
 export const xpTransactionsRelations = relations(xpTransactions, ({ one }) => ({
@@ -116,17 +110,13 @@ export const achievementsRelations = relations(achievements, ({ one }) => ({
 }));
 
 export const marketplaceItemsRelations = relations(marketplaceItems, ({ one }) => ({
-  distributor: one(distributors, {
+  distributor: one(users, {
     fields: [marketplaceItems.distributorId],
-    references: [distributors.id],
-  }),
-  users: one(users, {
-    fields: [marketplaceItems.userId],
     references: [users.id],
   }),
 }));
 
-export const distributorsRelations = relations(distributors, ({ one,many }) => ({
+export const distributorsRelations = relations(distributors, ({ one }) => ({
   admins: one(admins, {
     fields: [distributors.adminId],
     references: [admins.id],

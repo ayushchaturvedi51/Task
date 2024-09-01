@@ -9,6 +9,7 @@ export class Admin {
     try {
       return await postgresdb.transaction(async (tx) => {
         await tx.update(distributors).set({
+          // @ts-ignore
           xpBalance: sql`${distributors.xpBalance}-${xpAmount}`
         }).where(eq(distributors.id,fromUserId))
 
@@ -65,6 +66,7 @@ export class Admin {
       if (distrubutor) {
         await postgresdb
           .update(distributors)
+          // @ts-ignore
           .set({ xpBalance: sql`${distributors.xpBalance}+${xp}` })
           .where(eq(distributors.id, distributorId));
         return distrubutor;

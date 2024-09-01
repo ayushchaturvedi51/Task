@@ -16,7 +16,6 @@
     "cookie": "^0.6.0",
     "cookie-session": "^2.1.0",
     "cookie-signature": "^1.0.6",
-    "cors": "^2.8.5",
     "csv-parser": "^3.0.0",
     "csvtojson": "^2.0.10",
     "debug": "^2.6.9",
