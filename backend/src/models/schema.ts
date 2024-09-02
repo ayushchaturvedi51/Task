@@ -1,4 +1,4 @@
-import { serial, pgTable, varchar, integer, timestamp, pgEnum,boolean } from "drizzle-orm/pg-core";
+import { serial, pgTable, varchar, integer, timestamp, pgEnum } from "drizzle-orm/pg-core";
 import { relations } from "drizzle-orm";
 
 // Define enums
@@ -33,41 +33,31 @@ export const users = pgTable('users', {
 
 export const xpTransactions = pgTable('xp_transactions', {
   id: serial('id').primaryKey(),
-  fromUserId: integer('from_user_id').references(()=>distributors.id),
+  fromUserId: integer('from_user_id'),
+  fromUserRole:varchar("from_user_role"),
   toUserId: integer('to_user_id').references(()=>users.id),
   xpAmount: integer('xp_amount').notNull(),
-  transactionType: varchar('transaction_type').default("transfer"),
+  transactionType: transactionTypeEnum('transaction_type').default("transfer").notNull(),
   createdAt: timestamp('created_at').defaultNow(),
   updatedAt: timestamp('updated_at').defaultNow(),
 });
 
 export const achievements = pgTable('achievements', {
   id: serial('id').primaryKey(),
-  name: varchar('name', { length: 100 }).notNull(),
-  description: varchar('description'),
+  distributorId:integer('distributor_id').references(() => distributors.id),
   userId: integer('user_id').references(() => users.id),
   xpAwarded: integer('xp_awarded'),
   createdAt: timestamp('created_at').defaultNow(),
   updatedAt: timestamp('updated_at').defaultNow(),
 });
 
-export const marketplaceItems:any = pgTable('marketplace_items', {
-  id: serial('id').primaryKey(),
-  userId: integer('user_id').references(() => users.id),
-  name: varchar('name', { length: 100 }).notNull(),
-  description: varchar('description'),
-  distributorId: integer('distributor_id').references(() => distributors.id),
-  xpPrice: integer('xp_price').notNull(),
-  isReedemed:boolean("is_redeemed").default(false),
-  createdAt: timestamp('created_at').defaultNow(),
-  updatedAt: timestamp('updated_at').defaultNow(),
-});
+
 
 export const distributors = pgTable('distributors', {
   id: serial('id').primaryKey(),
   adminId: integer('admin_id').references(() => admins.id),
   userName:varchar("user_name"),
-  phoneNumber:integer("phone_number"),
+  phoneNumber:integer("phone_number").unique(),
   role: varchar('role').default('distributor'),
   organizationName: varchar('organization_name', { length: 100 }).notNull(),
   createdAt: timestamp('created_at').defaultNow(),
@@ -75,6 +65,15 @@ export const distributors = pgTable('distributors', {
   xpBalance: integer('xp_balance').default(10000)
 });
 
+export const marketplaceItems:any = pgTable('marketplace_items', {
+  id: serial('id').primaryKey(),
+  name: varchar('name', { length: 100 }).notNull(),
+  description: varchar('description'),
+  distributorId: integer('distributor_id').references(() => users.id),
+  xpPrice: integer('xp_price').notNull(),
+  createdAt: timestamp('created_at').defaultNow(),
+  updatedAt: timestamp('updated_at').defaultNow(),
+});
 // Define relations
 
 export const adminRelations=relations(admins,({many})=>({
@@ -115,17 +114,13 @@ export const achievementsRelations = relations(achievements, ({ one }) => ({
 }));
 
 export const marketplaceItemsRelations = relations(marketplaceItems, ({ one }) => ({
-  distributor: one(distributors, {
+  distributor: one(users, {
     fields: [marketplaceItems.distributorId],
-    references: [distributors.id],
-  }),
-  users: one(users, {
-    fields: [marketplaceItems.userId],
     references: [users.id],
   }),
 }));
 
-export const distributorsRelations = relations(distributors, ({ one,many }) => ({
+export const distributorsRelations = relations(distributors, ({ one }) => ({
   admins: one(admins, {
     fields: [distributors.adminId],
     references: [admins.id],

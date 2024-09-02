@@ -5,19 +5,34 @@ import { eq, and, sql } from "drizzle-orm";
 
 export class Admin {
   
-  static  updateXp=async(fromUserId:number,toUserId:number,xpAmount:any):Promise<any>=>{
+  static  userAchievement=async(fromUserId:number,toUserId:number,xpAmount:any):Promise<any>=>{
     try {
-      await postgresdb.transaction(async (tx) => {
+      return await postgresdb.transaction(async (tx) => {
         await tx.update(distributors).set({
+          // @ts-ignore
           xpBalance: sql`${distributors.xpBalance}-${xpAmount}`
         }).where(eq(distributors.id,fromUserId))
 
-        await tx.update(users).set({
+        const email = await tx.update(users).set({
           xpBalance: sql`${users.xpBalance}+${xpAmount}`
-        }).where(eq(users.id,toUserId))
+        }).where(eq(users.id,toUserId)).returning({
+          email:users.email
+        })
 
+        await tx.insert(achievements).values({
+          distributorId:fromUserId,
+          userId: toUserId,
+          xpAwarded: xpAmount,
+        })
+
+        await tx.insert(xpTransactions).values({
+          fromUserId:fromUserId,
+          fromUserRole:"distributor",
+          toUserId:toUserId,
+          xpAmount:xpAmount,
+        })
+        return email;
       })
-      
     } catch (error) {
       throw new Error(error)
     }
@@ -29,7 +44,7 @@ export class Admin {
         .select({ id: users.id, xpBalance: users.xpBalance })
         .from(users)
         .where(eq(users.id, userId));
-      if (user) {
+      if (user.length>0) {
         await postgresdb
           .update(users)
           .set({ xpBalance: user[0].xpBalance + xp })
@@ -51,6 +66,7 @@ export class Admin {
       if (distrubutor) {
         await postgresdb
           .update(distributors)
+          // @ts-ignore
           .set({ xpBalance: sql`${distributors.xpBalance}+${xp}` })
           .where(eq(distributors.id, distributorId));
         return distrubutor;
@@ -109,20 +125,6 @@ export class Admin {
       throw new Error("Error while getting transactions");
     }
   }
-  // name: varchar('name', { length: 100 }).notNull(),
-  // description: varchar('description'),
-  // userId: integer('user_id').references(() => users.id),
-  // xpAwarded: integer('xp_awarded'),
-  static async insertAchievements(userId:number,achievementName:string, xpAwarded:number){
-    try {
-      const achievement = await postgresdb.insert(achievements).values({
-        userId:userId,
-        name:achievementName,
-        xpAwarded: xpAwarded
-      })
-      return achievement;
-    } catch (error) {
-      throw new Error("Error while creating the achievement")
-    }
-  }
+
+  
 }

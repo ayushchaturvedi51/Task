@@ -1,21 +1,17 @@
 import postgresdb from "../../config/db";
 import { users, achievements } from "../../models/schema";
-import { eq } from "drizzle-orm";
+import { eq,and } from "drizzle-orm";
 
 export class achievementsController {
 
-    static getAllAchievements = async (): Promise<any> => {
+    static getAllAchievements = async (userId:number): Promise<any> => {
         try {
             const achievements = await postgresdb.query.users.findMany({
-                where: (users, { eq }) => eq(users.role, 'user'),
-                columns: {
-                    id: true,
-                },
+                where: eq(users.id, userId),
+                columns: {},
                 with: {
                     achievements: {
                         columns: {
-                            name: true,
-                            description: true,
                             xpAwarded: true,
                         }
                     }
@@ -27,14 +23,14 @@ export class achievementsController {
         }
     }
 
-    static getachievement = async (achievementId: number): Promise<any> => {
+    static getachievement = async (userId:number,achievementId: number): Promise<any> => {
         try {
             const achievement = await postgresdb.query.achievements.findFirst({
-                where: eq(achievements.id, achievementId),
+                where: and(eq(achievements.id, achievementId),eq(achievements.userId,userId)),
                 columns: {
                     id: true,
-                    name: true,
-                    description: true,
+                    userId:true,
+                    distributorId:true,
                     xpAwarded: true,
                 }
             });

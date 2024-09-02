@@ -5,7 +5,8 @@ export class achievementsController {
     
     static allachievements = async (req: Request, res: Response): Promise<any> => {
         try {
-            const achievements = await dbservices.achievementsController.getAllAchievements();
+            const userId=req["user"]["userId"]
+            const achievements = await dbservices.achievementsController.getAllAchievements(userId);
             if (!achievements) {
                 return res.status(404).send({ status: false, message: "No Achievements found" });
             }
@@ -18,8 +19,9 @@ export class achievementsController {
     
     static specificAchievements = async (req: Request, res: Response): Promise<any> => {
         try {
+            const userId=req["user"]["userId"]
             const achievementId = parseInt(req.params.id);
-            const updateAchievement = await dbservices.achievementsController.getachievement(achievementId);
+            const updateAchievement = await dbservices.achievementsController.getachievement(userId,achievementId);
             return res.status(200).json({ status: true, message: "Data fetched", updateAchievement });
         } catch (error) {
             return res.status(500).send({ status: false, message: error.message });

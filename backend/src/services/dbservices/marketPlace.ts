@@ -43,10 +43,7 @@ export class market{
 
     static createMarketitem = async(market:any ,id:number): Promise<any>=>{
         try{
-            console.log("createMarketitem");
-            console.log(market)
-            
-            const create = await postgresdb.insert(marketplaceItems).values({
+            return await postgresdb.insert(marketplaceItems).values({
                 name:market.name,
                 description:market.description,
                 xpPrice:market.xpPrice,
@@ -57,23 +54,42 @@ export class market{
                 xpPrice:marketplaceItems.xpPrice,
                 distributorId:marketplaceItems.distributorId,
             })
-            return create
         }catch(error){
             throw new Error(error)
         }
     }
 
 
-    static redeemItem = async(marketplaceItemId:number,userId:number): Promise<any>=>{
+    static redeemItem = async(marketplaceItemId:number,userId:number,itemPrice:number): Promise<any>=>{
         try{
-            const update =await postgresdb.update(marketplaceItems).set({
-                isRedeemed:true,
-                userId:userId
-            }).where(eq(marketplaceItems.id , marketplaceItemId)).returning({
-                name:marketplaceItems.name
+            const getPriceOfItem=await postgresdb.query.marketplaceItems.findFirst({
+                where:eq(marketplaceItems.id,marketplaceItemId),
+                columns:{
+                    xpPrice:true,
+                    isReedemed:true
+                }
             })
+            if(!getPriceOfItem){
+                throw new Error("Item not availaible")
+            }
+            if(getPriceOfItem.isReedemed==true){
+                throw new Error("Item already sold")
+            }
+            if(getPriceOfItem.xpPrice==itemPrice){
+                await postgresdb.update(marketplaceItems).set({
+                    isRedeemed:true,
+                    userId:userId
+                }).where(eq(marketplaceItems.id , marketplaceItemId)).returning({
+                    name:marketplaceItems.name
+                })
+            }else if(itemPrice<getPriceOfItem.xpPrice ||itemPrice>getPriceOfItem.xpPrice){
+                throw new Error("Invalid Amount")
+            }else{
+                throw new Error("Incorrect amount")
+            }
+            
         }catch(error){
-            throw new Error
+            throw new Error(error)
         }
     }
 }
