@@ -1,5 +1,5 @@
 {
-  "id": "174a240a-7ddf-4f86-a50b-dec9b555e619",
+  "id": "bbfdbe42-55ea-412b-b473-4ee639a39979",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -114,6 +114,18 @@
           "notNull": false,
           "default": 100000
         },
+        "distributor_login_id": {
+          "name": "distributor_login_id",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "distributor_login_password": {
+          "name": "distributor_login_password",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
         "created_at": {
           "name": "created_at",
           "type": "timestamp",
@@ -171,6 +183,19 @@
           "primaryKey": false,
           "notNull": false
         },
+        "phone_number": {
+          "name": "phone_number",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "role": {
+          "name": "role",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "'distributor'"
+        },
         "organization_name": {
           "name": "organization_name",
           "type": "varchar(100)",
@@ -190,6 +215,13 @@
           "primaryKey": false,
           "notNull": false,
           "default": "now()"
+        },
+        "xp_balance": {
+          "name": "xp_balance",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "default": 10000
         }
       },
       "indexes": {},
@@ -221,6 +253,12 @@
           "primaryKey": true,
           "notNull": true
         },
+        "user_id": {
+          "name": "user_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
         "name": {
           "name": "name",
           "type": "varchar(100)",
@@ -245,6 +283,13 @@
           "primaryKey": false,
           "notNull": true
         },
+        "is_redeemed": {
+          "name": "is_redeemed",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false,
+          "default": false
+        },
         "created_at": {
           "name": "created_at",
           "type": "timestamp",
@@ -262,10 +307,23 @@
       },
       "indexes": {},
       "foreignKeys": {
-        "marketplace_items_distributor_id_users_id_fk": {
-          "name": "marketplace_items_distributor_id_users_id_fk",
+        "marketplace_items_user_id_users_id_fk": {
+          "name": "marketplace_items_user_id_users_id_fk",
           "tableFrom": "marketplace_items",
           "tableTo": "users",
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "marketplace_items_distributor_id_distributors_id_fk": {
+          "name": "marketplace_items_distributor_id_distributors_id_fk",
+          "tableFrom": "marketplace_items",
+          "tableTo": "distributors",
           "columnsFrom": [
             "distributor_id"
           ],
@@ -428,10 +486,10 @@
       },
       "indexes": {},
       "foreignKeys": {
-        "xp_transactions_from_user_id_users_id_fk": {
-          "name": "xp_transactions_from_user_id_users_id_fk",
+        "xp_transactions_from_user_id_distributors_id_fk": {
+          "name": "xp_transactions_from_user_id_distributors_id_fk",
           "tableFrom": "xp_transactions",
-          "tableTo": "users",
+          "tableTo": "distributors",
           "columnsFrom": [
             "from_user_id"
           ],

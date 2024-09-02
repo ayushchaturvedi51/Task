@@ -32,8 +32,14 @@ export class market{
 
     static creteMarketitem = async(req: Request, res: Response): Promise<any>=>{
         try{
+            // const distributorId = req["user"]["distributorId"]
+            console.log("hit")
+            const distributorId =1
+            if(!distributorId){
+                return res.status(401).send({status:false, message:"Unauthorized Access"})
+            }
             const marketItem = req.body
-            const createdItem = await dbservices.market.createMarketitem(marketItem)
+            const createdItem = await dbservices.market.createMarketitem(marketItem ,distributorId)
             res.status(200).send({status:true, message:"Item Created", data:createdItem})
         }catch(error) {
             res.status(500).send({status:false, message:error.message})

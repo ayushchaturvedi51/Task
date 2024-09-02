@@ -13,7 +13,8 @@ export class market{
                     id:true,
                     name:true,
                     description:true,
-                    xpPrice:true
+                    xpPrice:true,
+                    isReedemed:true
                 }
             })
             return availableitems;
@@ -40,27 +41,25 @@ export class market{
 
     }
 
-    static createMarketitem = async(market:any): Promise<any>=>{
+    static createMarketitem = async(market:any ,id:number): Promise<any>=>{
         try{
-            const isexisting = await postgresdb.query.marketplaceItems.findFirst({
-                where: (marketplaceItems, { eq }) => eq(marketplaceItems.name , market.name),
-                columns:{
-                    id:true,
-                }
-            })
-
-            if(!isexisting){
-                throw new Error("Item already exists")
-            }
+            console.log("createMarketitem");
+            console.log(market)
+            
             const create = await postgresdb.insert(marketplaceItems).values({
                 name:market.name,
                 description:market.description,
-                distributorId:market.distributorId,
-                xpPrice:market.xpPrice
+                xpPrice:market.xpPrice,
+                distributorId:id
+            }).returning({
+                name:marketplaceItems.name,
+                description:marketplaceItems.description,
+                xpPrice:marketplaceItems.xpPrice,
+                distributorId:marketplaceItems.distributorId,
             })
             return create
         }catch(error){
-            throw new Error
+            throw new Error(error)
         }
     }
 

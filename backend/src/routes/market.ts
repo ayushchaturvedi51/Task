@@ -7,7 +7,7 @@ const router=express.Router()
 
 
 
-router.get('/' , authenticateUser, controllers.market.availableItem)
+router.get('/' , controllers.market.availableItem)
 router.post("/" , authenticateUser,controllers.market.creteMarketitem)
 router.get('/:id' ,authenticateUser, controllers.market.getSpecific)
 router.post('/:id' , authenticateUser, controllers.market.redeemedItem)

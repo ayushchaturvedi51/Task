@@ -15,6 +15,8 @@ CREATE TABLE IF NOT EXISTS "admins" (
 	"password" varchar(255) NOT NULL,
 	"role" varchar DEFAULT 'admin',
 	"xp_balance" integer DEFAULT 100000,
+	"distributor_login_id" varchar,
+	"distributor_login_password" varchar,
 	"created_at" timestamp DEFAULT now(),
 	"updated_at" timestamp DEFAULT now(),
 	CONSTRAINT "admins_username_unique" UNIQUE("username"),
@@ -25,17 +27,22 @@ CREATE TABLE IF NOT EXISTS "distributors" (
 	"id" serial PRIMARY KEY NOT NULL,
 	"admin_id" integer,
 	"user_name" varchar,
+	"phone_number" integer,
+	"role" varchar DEFAULT 'distributor',
 	"organization_name" varchar(100) NOT NULL,
 	"created_at" timestamp DEFAULT now(),
-	"updated_at" timestamp DEFAULT now()
+	"updated_at" timestamp DEFAULT now(),
+	"xp_balance" integer DEFAULT 10000
 );
 --> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "marketplace_items" (
 	"id" serial PRIMARY KEY NOT NULL,
+	"user_id" integer,
 	"name" varchar(100) NOT NULL,
 	"description" varchar,
 	"distributor_id" integer,
 	"xp_price" integer NOT NULL,
+	"is_redeemed" boolean DEFAULT false,
 	"created_at" timestamp DEFAULT now(),
 	"updated_at" timestamp DEFAULT now()
 );
@@ -77,7 +84,13 @@ EXCEPTION
 END $$;
 --> statement-breakpoint
 DO $$ BEGIN
- ALTER TABLE "marketplace_items" ADD CONSTRAINT "marketplace_items_distributor_id_users_id_fk" FOREIGN KEY ("distributor_id") REFERENCES "public"."users"("id") ON DELETE no action ON UPDATE no action;
+ ALTER TABLE "marketplace_items" ADD CONSTRAINT "marketplace_items_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE no action ON UPDATE no action;
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
+ ALTER TABLE "marketplace_items" ADD CONSTRAINT "marketplace_items_distributor_id_distributors_id_fk" FOREIGN KEY ("distributor_id") REFERENCES "public"."distributors"("id") ON DELETE no action ON UPDATE no action;
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;
@@ -89,7 +102,7 @@ EXCEPTION
 END $$;
 --> statement-breakpoint
 DO $$ BEGIN
- ALTER TABLE "xp_transactions" ADD CONSTRAINT "xp_transactions_from_user_id_users_id_fk" FOREIGN KEY ("from_user_id") REFERENCES "public"."users"("id") ON DELETE no action ON UPDATE no action;
+ ALTER TABLE "xp_transactions" ADD CONSTRAINT "xp_transactions_from_user_id_distributors_id_fk" FOREIGN KEY ("from_user_id") REFERENCES "public"."distributors"("id") ON DELETE no action ON UPDATE no action;
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;
