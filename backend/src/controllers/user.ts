@@ -65,7 +65,7 @@ export class userController{
   static createDistributor=async(req:Request,res:Response)=>{
     try {
       const adminId=req["user"]["adminId"]
-      await dbservices.Admin.createDistributor(parseInt(adminId),req.body)
+      await dbservices.User.createDistributor(parseInt(adminId),req.body)
       res.status(200).send({status:true,message:"Distributor Profile Created"})  
     } catch (error) {
       res.status(500).send({status:false,message:error.message})
@@ -74,7 +74,7 @@ export class userController{
 
   static loginDistributor=async(req:Request,res:Response)=>{
     try {
-      const loginDistributor=await dbservices.Admin.loginDistributor(req.body)
+      const loginDistributor=await dbservices.User.loginDistributor(req.body)
       res.status(200).send({status:true,message:"Distributor Login Successfully",data:loginDistributor})  
     } catch (error) {
       res.status(500).send({status:false,message:error.message})
@@ -85,7 +85,7 @@ export class userController{
     try {
       const email=req.params.email
       const adminId=req["user"]["adminId"]
-      await dbservices.Admin.deleteUser(email,adminId)
+      await dbservices.User.deleteUser(email,adminId)
       res.status(200).send({status:true,message:"Distributor deleted Successfully"})  
     } catch (error) {
       res.status(500).send({status:false,message:error.message})

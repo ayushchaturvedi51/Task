@@ -37,7 +37,7 @@ export const xpTransactions = pgTable('xp_transactions', {
   fromUserRole:varchar("from_user_role"),
   toUserId: integer('to_user_id').references(()=>users.id),
   xpAmount: integer('xp_amount').notNull(),
-  transactionType: transactionTypeEnum('transaction_type').notNull(),
+  transactionType: transactionTypeEnum('transaction_type').default("transfer").notNull(),
   createdAt: timestamp('created_at').defaultNow(),
   updatedAt: timestamp('updated_at').defaultNow(),
 });

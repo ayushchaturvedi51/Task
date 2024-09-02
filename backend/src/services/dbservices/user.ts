@@ -1,8 +1,8 @@
 import { truncate } from "fs/promises";
 import postgresdb from "../../config/db"
 import { setUser } from "../../config/jwttoken"
-import {  admins, distributors, users } from "../../models/schema"
-import { eq,and } from "drizzle-orm"
+import {  admins, distributors, users, xpTransactions } from "../../models/schema"
+import { eq,and,sql,or, ConsoleLogWriter } from "drizzle-orm"
 
 export class User{
   static generateId = () => Math.random().toString(36).substr(2, 8).toUpperCase();
@@ -206,5 +206,73 @@ export class User{
       throw new Error(error)
     }
   }
+
+  static buyXP=async(userId:number,xpBalance:number,adminId:number):Promise<any>=>{
+    try {
+      await postgresdb.transaction(async (tx) => {
+        await tx.update(users).set({
+          xpBalance:sql`${users.xpBalance}+${xpBalance}`
+        }).where(eq(users.id,userId))
+
+        const getAdmin=await tx.update(admins).set({
+          xpBalance:sql`${admins.xpBalance}-${xpBalance}`
+        }).where(eq(admins.id,adminId)).returning({id:admins.id})
+
+        await tx.insert(xpTransactions).values({
+          fromUserId:getAdmin[0].id,
+          fromUserRole:"Admin",
+          toUserId:userId,
+          xpAmount:xpBalance
+        })
+      })
+    } catch (error) {
+      throw new Error(error)
+    }
+  }
+
+  static transferXp = async(fromUser:number,xpAmount:number,toUser:number):Promise<any>=>{
+    try{
+      await postgresdb.transaction(async (tx) => {
+        const getUserXp=await tx.select({xpBalance:users.xpBalance,userId:users.id}).from(users).where(eq(users.id,fromUser))
+        if(getUserXp.length==0){
+          throw new Error("Invalid User")
+        }
+        if(getUserXp[0].xpBalance<xpAmount){
+          throw new Error("Not enough XP points")
+        }
+
+        await tx.update(users).set({
+          xpBalance:sql`${users.xpBalance} - ${xpAmount}`
+        }).where(eq(users.id,fromUser))  
+
+        await tx.update(users).set({
+          xpBalance:sql`${users.xpBalance} + ${xpAmount}`
+        }).where(eq(users.id, toUser))
+
+
+        await tx.insert(xpTransactions).values({
+          fromUserId:fromUser,
+          fromUserRole:"User",
+          toUserId:toUser,
+          xpAmount:xpAmount
+        })
+      })
+    }catch(error){
+      throw new Error(error)
+    }
+  }
+
+
+  static getTransactionHistory = async(userId:number):Promise<any>=>{
+    try{
+      return await postgresdb.query.xpTransactions.findMany({
+        where:or(eq(xpTransactions.fromUserId,userId),eq(xpTransactions.toUserId,userId))
+      })
+    }catch(error){
+      throw new Error(error)
+    }
+  }
+
+
   
 }
